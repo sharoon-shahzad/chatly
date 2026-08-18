@@ -1,12 +1,31 @@
+import dotenv from "dotenv";
 
-// import connectDB from './db/config.js';
-import checkInstantConnect from './db/test-db.js';
-import dotenv from 'dotenv';
+dotenv.config();
 
-dotenv.config({
-    path: './.env',
-    debug: true, // Enable debug mode to log environment variable loading
-});
+import express from "express";
+import { sequelize, connectDB } from "./db/config.js";
+import "./models/associations.js";
 
-checkInstantConnect();
+const app = express();
 
+app.use(express.json());
+
+async function startServer() {
+    try {
+        await connectDB();
+
+        await sequelize.sync();
+
+        console.log("Database synchronized");
+
+        app.listen(3000, () => {
+            console.log("Server running on port 3000");
+        });
+
+    } catch (error) {
+        console.error("Unable to start application:", error);
+        process.exit(1);
+    }
+}
+
+startServer();
