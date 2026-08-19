@@ -4,11 +4,14 @@ dotenv.config();
 
 import express from "express";
 import { sequelize, connectDB } from "./db/config.js";
+import { app } from "./app.js";
 import "./models/associations.js";
 
-const app = express();
+
 
 app.use(express.json());
+
+
 
 async function startServer() {
     try {
