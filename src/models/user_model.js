@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../db/config.js";
+import jwt from "jsonwebtoken";
 
 const User = sequelize.define(
     "User",
@@ -47,5 +48,22 @@ const User = sequelize.define(
         // }
     }
 );
+User.prototype.generateAccessToken = async function () {
+    return jwt.sign({
+        user_id: this.user_id,
+        email: this.email,
+    }, process.env.JWT_SECRET, {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
+    });
+}
+User.prototype.generateRefreshToken = async function () {
+    return jwt.sign({
+        user_id: this.user_id,
+        email: this.email,
+    }, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRATION,
+    });
+
+}
 
 export default User;
